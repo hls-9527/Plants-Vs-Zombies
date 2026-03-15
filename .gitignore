@@ -1,0 +1,27 @@
+# VS 临时缓存文件夹
+Plants-V.cb451ca3/
+
+# VS 用户配置文件
+*.user
+
+# VS 临时文件夹
+.vs/
+*.suo
+*.sln.docstates
+
+# 编译输出文件夹
+x64/
+Debug/
+Release/
+
+# 编译输出文件
+*.exe
+*.pdb
+*.ilk
+*.obj
+*.lib
+*.dll
+
+# 系统文件
+Thumbs.db
+.DS_Store
