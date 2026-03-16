@@ -102,20 +102,47 @@ void BasicZombie::update()
         if (stateTimer >= 30) {
             stateTimer = 0;
 
-            // 安全检查
+            // 安全检查：如果 targetPlant 为空，直接停止吃
             if (targetPlant == nullptr) {
                 stopEating();
                 break;
             }
 
-            // 检查植物是否还在网格中（通过 GameManager 重新获取）
+            // 获取 GameManager 实例
             GameManager* game = GameManager::getInstance();
-            Plant* currentPlant = game->getPlantAt(targetPlant->getRow(), targetPlant->getCol());
 
-            if (currentPlant == targetPlant && targetPlant->isAlive()) {
+            // 先判断 targetPlant 指向的植物是否还在网格中
+            // 注意：这里不能直接调用 targetPlant->getRow()，因为 targetPlant 可能已经是野指针！
+            // 所以我们需要遍历网格来查找这个指针
+
+            bool plantExists = false;
+            int plantRow = -1, plantCol = -1;
+
+            // 遍历整个网格，查找 targetPlant 是否还存在
+            for (int r = 0; r < 3; r++) {
+                for (int c = 0; c < 9; c++) {
+                    if (game->getPlantAt(r, c) == targetPlant) {
+                        plantExists = true;
+                        plantRow = r;
+                        plantCol = c;
+                        break;
+                    }
+                }
+                if (plantExists) break;
+            }
+
+            // 如果植物不存在于网格中（已被删除），停止吃
+            if (!plantExists) {
+                stopEating();
+                break;
+            }
+
+            // 到这里说明植物还在网格中，可以安全地访问其方法
+            if (targetPlant->isAlive()) {
                 targetPlant->takeDamage(attackDamage);
             }
             else {
+                // 植物已死亡，停止吃
                 stopEating();
             }
         }

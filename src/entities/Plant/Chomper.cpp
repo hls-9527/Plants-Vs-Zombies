@@ -246,6 +246,7 @@ void Chomper::attack()
         if (zombieX >= x - ATTACK_RANGE && zombieX <= x + ATTACK_RANGE) {
             // ½©Ê¬Ö±½ÓËÀÍö
             zombie->setAlive(false);
+            zombie->animationFinished = true;
             break;
         }
     }

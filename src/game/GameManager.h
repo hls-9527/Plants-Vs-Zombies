@@ -149,6 +149,23 @@ public:
     // === 僵尸查询 ===
     const std::vector<Zombie*>& getZombies() const { return zombies; }
 
+    // 安全获取植物指针（带边界检查）
+    Plant* getPlantAtSafe(int row, int col) const {
+        if (row < 0 || row >= 3 || col < 0 || col >= 9) {
+            return nullptr;
+        }
+        return plantGrid[row][col];
+    }
+
+    // 安全设置植物指针（带边界检查）
+    bool setPlantAtSafe(int row, int col, Plant* plant) {
+        if (row < 0 || row >= 3 || col < 0 || col >= 9) {
+            return false;
+        }
+        plantGrid[row][col] = plant;
+        return true;
+    }
+
 private:
     // === 私有方法（内部逻辑）===
 

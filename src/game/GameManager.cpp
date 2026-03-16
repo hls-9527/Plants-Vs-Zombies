@@ -501,7 +501,7 @@ void GameManager::handleClick(int mouseX, int mouseY)
         int row, col;
         if (getGridIndexFromPos(mouseX, mouseY, row, col)) {
             // 在网格内点击，让铲子处理
-            if (shovel->handleClick(mouseX, mouseY, row, col, plantGrid[row][col])) {
+            if (shovel->handleClick(mouseX, mouseY, row, col, getPlantAtSafe(row, col))) {
                 return;  // 铲子处理完成
             }
         }
@@ -638,7 +638,7 @@ bool GameManager::getGridIndexFromPos(int x, int y, int& row, int& col)
     int gridRight = gridLeft + 9 * 81;  // 144 + 729 = 873
     int gridBottom = gridTop + 3 * 102;  // 179 + 306 = 485
 
-    if (x < gridLeft || x > gridRight || y < gridTop || y > gridBottom) {
+    if (x <= gridLeft || x >= gridRight || y <= gridTop || y >= gridBottom) {
         return false;
     }
 
@@ -791,6 +791,7 @@ void GameManager::checkCollisions()
             // 碰撞检测：子弹碰到僵尸的身体范围
             // 僵尸图片宽度约80-100像素，取中间范围
             if (bulletX >= zombieX + 70 && bulletX <= zombieX + 100) {
+                if (!zombie->isAlive()) continue;
                 // 子弹击中僵尸
                 bullet->onHit();
                 zombie->takeDamage(bullet->getDamage());
@@ -808,7 +809,7 @@ void GameManager::checkCollisions()
 
         // 检查当前行的所有植物
         for (int col = 0; col < 9; col++) {
-            Plant* plant = plantGrid[row][col];
+            Plant * plant = getPlantAtSafe(row, col);
             if (!plant || !plant->isAlive()) continue;
 
             int plantX = plant->getX();
@@ -904,7 +905,8 @@ bool GameManager::plantAt(int row, int col, int plantType)
     }
 
     // 检查该位置是否已有植物
-    if (plantGrid[row][col] != nullptr) {
+    Plant* existingPlant = getPlantAtSafe(row, col);
+    if (existingPlant != nullptr) {
         return false;
     }
 
@@ -936,7 +938,7 @@ bool GameManager::plantAt(int row, int col, int plantType)
     }
 
     if (plant) {
-        plantGrid[row][col] = plant;
+        setPlantAtSafe(row, col, plant);
         return true;
     }
 

@@ -142,7 +142,7 @@ void Zombie::stopEating()
     currentState = STATE_WALKING;
     targetPlant = nullptr;
     frameIndex = 0;
-    speed = 0.2f;  // 恢复移动速度（由派生类设置具体值）
+    speed = 0.4f;  // 恢复移动速度（由派生类设置具体值）
 }
 
 /**
